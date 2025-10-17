@@ -1,4 +1,6 @@
 #include <map>
+#include <tuple>
+#include <algorithm>
 
 struct CellKey
 {
@@ -37,16 +39,13 @@ public:
 public:
     void operator=(T value)
     {
-        if (value != _pMatrix->_defaultValue)
+        if (value != _pMatrix->_defaultValue && value != _pMatrix->_zeroValue)
         {
-            if (_currentValue != _pMatrix->_defaultValue)
-                _currentValue = value;
-            else
-                _pMatrix->Insert(_currentCell, value);
+            _pMatrix->Insert(_currentCell, value);
         }
         else
         {
-            if (_currentValue != _pMatrix->_defaultValue)
+            if (_currentValue != _pMatrix->_defaultValue && value != _pMatrix->_zeroValue)
                 _pMatrix->Remove(_currentCell);
         }
     }
@@ -75,12 +74,15 @@ public:
 template<typename T>
 class SparseInfiniteMatrix
 {
+    using IteratorType = typename std::map<CellKey, T>::iterator;
+
 private:
     std::map<CellKey, T> _elements;
 protected:
     class Iterator;
 public:
     static int _defaultValue;
+    static int _zeroValue;
 public:
     SparseInfiniteMatrix() = default;
     T& FindCellKeyValue(const CellKey& cellKey)
@@ -91,16 +93,16 @@ public:
         else
             return it->second;
     }
-//public:
-    //Iterator begin()
-    //{
-    //    return Iterator(_elements.begin())
-    //}
+public:
+    Iterator begin()
+    {
+        return Iterator(_elements.begin());
+    }
 
-    //Iterator end()
-    //{
-    //    return Iterator(_elements.end())
-    //}
+    Iterator end()
+    {
+        return Iterator(_elements.end());
+    }
 public:
     size_t Size()
     {
@@ -109,7 +111,7 @@ public:
 
     void Insert(CellKey cellKey, T value)
     {
-        _elements.emplace(cellKey, value);
+        _elements[cellKey] = value;
     }
 
     void Remove(const CellKey& cellKey)
@@ -122,7 +124,50 @@ public:
     {
         return RowSparseInfiniteMatrix<T>(this, row);
     }
+
+    class Iterator
+    {
+    public:
+        Iterator(IteratorType  iteratorType)
+            : _iteratorType(iteratorType)
+        {}
+
+
+        std::tuple<size_t, size_t, T> operator*()
+        {
+            return std::make_tuple(_iteratorType->first.row, _iteratorType->first.col, _iteratorType->second);
+        };
+
+        Iterator& operator++()
+        {
+            ++_iteratorType;
+            return *this;
+        }
+
+        Iterator operator++(int)
+        {
+            Iterator temp = *this;
+            ++_iteratorType;
+            return temp;
+        }
+
+        bool operator==(const Iterator& other) const
+        {
+            return _iteratorType == other._iteratorType;
+        }
+
+        bool operator!=(const Iterator& other) const
+        {
+            return !(_iteratorType == other._iteratorType);
+        }
+
+    private:
+        IteratorType _iteratorType;
+    };
 };
 
 template <typename T>
 int SparseInfiniteMatrix<T>::_defaultValue = -1;
+
+template <typename T>
+int SparseInfiniteMatrix<T>::_zeroValue = 0;

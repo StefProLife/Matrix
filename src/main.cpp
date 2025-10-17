@@ -21,15 +21,25 @@ int main(int argc, char const* argv[])
     assert(matrix[100][100] == -1);
     assert(matrix.Size() == 0);
 
+    for (auto i = 0; i < 10; i++)
+        matrix[i][i] = i;
 
-    //for (auto c : matrix)
-    //{
-    //    int x;
-    //    int y;
-    //    int v;
-    //    std::tie(x, y, v) = c;
-    //    std::cout << x << y << v << std::endl;
-    //}
+    std::cout << std::endl;
+
+    for (auto i = 0, j = 9; i < 10; i++, j--)
+        matrix[i][j] = j;
+
+    std::cout << "size: " << matrix.Size() << std::endl;
+    std::cout << std::endl;
+
+    for (auto c : matrix)
+    {
+        size_t x;
+        size_t y;
+        size_t v;
+        std::tie(x, y, v) = c;
+        std::cout << x << y << v << std::endl;
+    }
 
     return 0;
 }

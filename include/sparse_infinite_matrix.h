@@ -76,6 +76,7 @@ template<typename T>
 class SparseInfiniteMatrix
 {
     using IteratorType = typename std::map<CellKey, T>::iterator;
+    class Iterator;
 
 private:
     std::map<CellKey, T> _elements;

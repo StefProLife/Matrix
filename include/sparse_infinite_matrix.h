@@ -83,6 +83,8 @@ public:
     static int _defaultValue;
     static int _zeroValue;
 public:
+    class Iterator;
+public:
     SparseInfiniteMatrix() = default;
     T& FindCellKeyValue(const CellKey& cellKey)
     {

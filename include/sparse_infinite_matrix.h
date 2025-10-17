@@ -7,7 +7,8 @@ struct CellKey
     size_t row;
     size_t col;
 
-    bool operator<(const CellKey& other) const {
+    bool operator<(const CellKey& other) const
+    {
         if (row != other.row)
             return row < other.row;
         return col < other.col;
@@ -21,32 +22,32 @@ template<typename T>
 class RowSparseInfiniteMatrix
 {
 private:
-    SparseInfiniteMatrix<T>* _pMatrix;
+    SparseInfiniteMatrix<T>& _pMatrix;
     T _currentValue;
     CellKey _currentCell;
     size_t _row;
 public:
-    RowSparseInfiniteMatrix(SparseInfiniteMatrix<T>* pMatrix, size_t row)
+    RowSparseInfiniteMatrix(SparseInfiniteMatrix<T>& pMatrix, size_t row)
         : _pMatrix(pMatrix), _row(row)
     {}
 public:
     RowSparseInfiniteMatrix<T>& operator[](size_t col)
     {
         _currentCell = { _row, col };
-        _currentValue = _pMatrix->FindCellKeyValue(_currentCell);
+        _currentValue = _pMatrix.FindCellKeyValue(_currentCell);
         return *this;
     }
 public:
     void operator=(T value)
     {
-        if (value != _pMatrix->_defaultValue && value != _pMatrix->_zeroValue)
+        if (value != _pMatrix._defaultValue && value != _pMatrix._zeroValue)
         {
-            _pMatrix->Insert(_currentCell, value);
+            _pMatrix.Insert(_currentCell, value);
         }
         else
         {
-            if (_currentValue != _pMatrix->_defaultValue && value != _pMatrix->_zeroValue)
-                _pMatrix->Remove(_currentCell);
+            if (_currentValue != _pMatrix._defaultValue && value != _pMatrix._zeroValue)
+                _pMatrix.Remove(_currentCell);
         }
     }
 
@@ -122,7 +123,7 @@ public:
 public:
     RowSparseInfiniteMatrix<T> operator[](size_t row)
     {
-        return RowSparseInfiniteMatrix<T>(this, row);
+        return RowSparseInfiniteMatrix<T>(*this, row);
     }
 
     class Iterator
@@ -131,7 +132,6 @@ public:
         Iterator(IteratorType  iteratorType)
             : _iteratorType(iteratorType)
         {}
-
 
         std::tuple<size_t, size_t, T> operator*()
         {

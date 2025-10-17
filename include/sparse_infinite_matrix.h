@@ -75,10 +75,10 @@ public:
 template<typename T>
 class SparseInfiniteMatrix
 {
+    using IteratorType = typename std::map<CellKey, T>::iterator;
+
 private:
     std::map<CellKey, T> _elements;
-protected:
-    class Iterator;
 public:
     static int _defaultValue;
     static int _zeroValue;
@@ -127,8 +127,6 @@ public:
 public:
     class Iterator
     {
-        using IteratorType = typename std::map<CellKey, T>::iterator;
-
     public:
         Iterator(IteratorType  iteratorType)
             : _iteratorType(iteratorType)

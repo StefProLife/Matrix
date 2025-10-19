@@ -51,6 +51,11 @@ public:
         }
     }
 
+    operator T&() const
+    {
+        return _pMatrix.FindCellKeyValue(_currentCell);;
+    }
+
     friend bool operator==(const RowSparseInfiniteMatrix<T>& lhs, T rhs)
     {
         return lhs._currentValue == rhs;

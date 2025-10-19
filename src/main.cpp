@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <format>
 #include "sparse_infinite_matrix.h"
 
 int main(int argc, char const* argv[])
@@ -29,6 +30,14 @@ int main(int argc, char const* argv[])
     for (auto i = 0, j = 9; i < 10; i++, j--)
         matrix[i][j] = j;
 
+    for (int i = 1; i < 9; i++)
+    {
+        for (int j = 1; j < 9; j++)
+            std::cout << matrix[i][j] << " ";
+        std::cout << std::endl;
+    }
+
+
     std::cout << "size: " << matrix.Size() << std::endl;
     std::cout << std::endl;
 
@@ -38,7 +47,7 @@ int main(int argc, char const* argv[])
         size_t y;
         size_t v;
         std::tie(x, y, v) = c;
-        std::cout << x << y << v << std::endl;
+        std::cout << std::format("[{},{}] = {}", x, y, v) << std::endl;
     }
 
     return 0;
